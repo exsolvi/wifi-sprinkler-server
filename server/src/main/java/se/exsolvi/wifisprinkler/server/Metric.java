@@ -1,27 +1,33 @@
 package se.exsolvi.wifisprinkler.server;
 
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.core.Response;
+
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+
 import com.amazonaws.services.cloudwatch.AmazonCloudWatch;
 import com.amazonaws.services.cloudwatch.AmazonCloudWatchClient;
 import com.amazonaws.services.cloudwatch.model.Dimension;
 import com.amazonaws.services.cloudwatch.model.MetricDatum;
 import com.amazonaws.services.cloudwatch.model.PutMetricDataRequest;
 import com.amazonaws.services.cloudwatch.model.StandardUnit;
-import com.amazonaws.services.lambda.runtime.Context;
-import com.amazonaws.services.lambda.runtime.LambdaLogger;
 
-import se.exsolvi.wifisprinkler.server.model.Request;
 import se.exsolvi.wifisprinkler.server.model.SensorData;
 
-public class StoreMetric {
+@Path("/")
+public class Metric {
 
-    public String handleRequest(Request<SensorData> sensorDataRequest, Context context) {
+    static final Logger logger = Logger.getLogger(Metric.class);
 
-        LambdaLogger logger = context.getLogger();
-        SensorData sensorData = sensorDataRequest.getRequestBody();
-        
+    @PUT
+    @Path("/metric/{deviceid}/")
+    public Response metricEndpoint(@PathParam("deviceid") String deviceId, SensorData sensorData) {
+
         try {
-            logger.log("Request: " + sensorDataRequest.toString());
-            logger.log("SensorData: " + sensorData);
+            logger.log(Level.DEBUG, "SensorData: " + sensorData);
             Dimension plant = new Dimension().withName("plant").withValue(sensorData.getSensorName());
             MetricDatum moisture = new MetricDatum().withMetricName("Moisture").withUnit(StandardUnit.None).withDimensions(plant).withValue(sensorData.getMoisture());
             MetricDatum humididty = new MetricDatum().withMetricName("Humidity").withUnit(StandardUnit.None).withDimensions(plant).withValue(sensorData.getHumidity());
@@ -32,12 +38,12 @@ public class StoreMetric {
 
             AmazonCloudWatch acw = new AmazonCloudWatchClient();
             acw.putMetricData(metricDataRequest);
-            logger.log("Sensor data sent to CloudWatch");
+            logger.log(Level.INFO, "Sensor data sent to CloudWatch");
 
             // DynamoDB dynamoDB = new DynamoDB(new AmazonDynamoDBClient());
             // Table sensorDataTable = dynamoDB.getTable("SensorData");
 
-            return "Ok";
+            return Response.status(200).build();
 
         } catch (Exception e) {
             throw new RuntimeException(e);

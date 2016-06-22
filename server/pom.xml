@@ -11,10 +11,10 @@
   <name>WiFi Sprinkler server</name>
   <description>AWS Lambda based server for the WiFi Sprinkler</description>
   <properties>
-    <lambada.version>0.0.5</lambada.version>
+    <lambada.version>0.0.6</lambada.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <deployment.bucket>se.exsolvi.wifisprinkler</deployment.bucket>
-    <deployment.package>org.lambadaframework.example</deployment.package>
+    <deployment.bucket>se.exsolvi.wifisprinkler.server</deployment.bucket>
+    <deployment.package>se.exsolvi.wifisprinkler.server</deployment.package>
     <deployment.region>eu-west-1</deployment.region>
     <deployment.stage>production</deployment.stage>
     <deployment.maximumExecutionTime>10</deployment.maximumExecutionTime>
@@ -22,44 +22,40 @@
   </properties>
   <dependencies>
     <dependency>
-      <groupId>org.lambadaframework</groupId>
-      <artifactId>runtime</artifactId>
-      <version>${lambada.version}</version>
-    </dependency>
-    <dependency>
       <groupId>com.amazonaws</groupId>
       <artifactId>aws-lambda-java-log4j</artifactId>
       <version>1.0.0</version>
-    </dependency>
-    <dependency>
-      <groupId>com.amazonaws</groupId>
-      <artifactId>aws-lambda-java-core</artifactId>
-      <version>1.1.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <version>1.7.21</version>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>com.amazonaws</groupId>
       <artifactId>aws-java-sdk-dynamodb</artifactId>
-      <version>1.11.8</version>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-annotations</artifactId>
-      <version>2.8.0.rc2</version>
-    </dependency>
-    <dependency>
-      <groupId>org.glassfish.jersey.core</groupId>
-      <artifactId>jersey-server</artifactId>
-      <version>2.23.1</version>
+      <version>1.11.9</version>
     </dependency>
     <dependency>
       <groupId>com.amazonaws</groupId>
       <artifactId>aws-java-sdk-cloudwatch</artifactId>
-      <version>1.11.8</version>
+      <version>1.11.9</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.ws.rs</groupId>
+      <artifactId>javax.ws.rs-api</artifactId>
+      <version>2.0.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.amazonaws</groupId>
+      <artifactId>aws-java-sdk-core</artifactId>
+      <version>1.11.9</version>
+    </dependency>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>1.2.17</version>
+    </dependency>
+    <dependency>
+      <groupId>org.lambadaframework</groupId>
+      <artifactId>runtime</artifactId>
+      <version>0.0.6</version>
     </dependency>
   </dependencies>
 
@@ -109,6 +105,18 @@
             </goals>
           </execution>
         </executions>
+        <dependencies>
+          <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-dynamodb</artifactId>
+            <version>1.11.9</version>
+          </dependency>
+          <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-cloudwatch</artifactId>
+            <version>1.11.9</version>
+          </dependency>
+        </dependencies>
       </plugin>
     </plugins>
     <extensions>
